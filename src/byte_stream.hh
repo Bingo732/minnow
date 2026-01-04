@@ -26,10 +26,10 @@ protected:
   uint64_t capacity_;
   bool error_ {};
   // 添加的内容
-  bool end_bytestream_ {false};
+  bool end_bytestream_ { false };
   std::string buffer_ {};
-  uint64_t bytes_read_ {0};
-  uint64_t bytes_writen_ {0};
+  uint64_t bytes_read_ { 0 };
+  uint64_t bytes_writen_ { 0 };
 };
 
 class Writer : public ByteStream

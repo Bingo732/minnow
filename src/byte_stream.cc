@@ -9,10 +9,11 @@ ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
 void Writer::push( string data )
 {
   // Your code here (and in each method below)
-  if(end_bytestream_) return;
-  uint64_t data_write_length = min(data.size(), available_capacity());
+  if ( end_bytestream_ )
+    return;
+  uint64_t data_write_length = min( data.size(), available_capacity() );
   bytes_writen_ += data_write_length;
-  buffer_.insert(buffer_.end(), data.begin(), data.begin() + data_write_length);
+  buffer_.insert( buffer_.end(), data.begin(), data.begin() + data_write_length );
   debug( "Writer::push({}) not yet implemented", data );
 }
 
@@ -58,8 +59,8 @@ string_view Reader::peek() const
 void Reader::pop( uint64_t len )
 {
   debug( "Reader::pop({}) not yet implemented", len );
-  uint64_t data_read_length = min(len, this->bytes_buffered());
-  buffer_.erase(buffer_.begin(), buffer_.begin() + data_read_length);
+  uint64_t data_read_length = min( len, this->bytes_buffered() );
+  buffer_.erase( buffer_.begin(), buffer_.begin() + data_read_length );
   bytes_read_ += data_read_length;
 }
 
@@ -67,7 +68,7 @@ void Reader::pop( uint64_t len )
 bool Reader::is_finished() const
 {
   debug( "Reader::is_finished() not yet implemented" );
-  return end_bytestream_ && (buffer_.size() == 0); // Your code here.
+  return end_bytestream_ && ( buffer_.size() == 0 ); // Your code here.
 }
 
 // Number of bytes currently buffered (pushed and not popped)
