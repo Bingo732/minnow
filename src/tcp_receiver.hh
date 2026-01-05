@@ -27,4 +27,7 @@ public:
 
 private:
   Reassembler reassembler_;
+  // 添加的
+  Wrap32 zero_point_ { Wrap32(0) };
+  bool is_sync_ { false };
 };
