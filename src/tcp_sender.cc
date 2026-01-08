@@ -115,7 +115,7 @@ void TCPSender::receive( const TCPReceiverMessage& msg )
 
 void TCPSender::tick( uint64_t ms_since_last_tick, const TransmitFunction& transmit )
 {
-  debug( "tick called curren_RTO_ms_:{}, timer_ms_:{}, ms_since_last_tick:{}",curren_RTO_ms_, timer_ms_, ms_since_last_tick );
+  // debug( "tick called curren_RTO_ms_:{}, timer_ms_:{}, ms_since_last_tick:{}",curren_RTO_ms_, timer_ms_, ms_since_last_tick );
   if ( outstanding_data_.empty() ) {
     timer_ms_ = 0;
     return ;
