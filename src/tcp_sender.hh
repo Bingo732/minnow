@@ -4,6 +4,7 @@
 #include "tcp_receiver_message.hh"
 #include "tcp_sender_message.hh"
 
+#include <deque>
 #include <functional>
 
 class TCPSender
@@ -11,7 +12,7 @@ class TCPSender
 public:
   /* Construct TCP sender with given default Retransmission Timeout and possible ISN */
   TCPSender( ByteStream&& input, Wrap32 isn, uint64_t initial_RTO_ms )
-    : input_( std::move( input ) ), isn_( isn ), initial_RTO_ms_( initial_RTO_ms )
+    : input_( std::move( input ) ), isn_( isn ), initial_RTO_ms_( initial_RTO_ms ), curren_RTO_ms_( initial_RTO_ms )
   {}
 
   /* Generate an empty TCPSenderMessage */
@@ -29,6 +30,8 @@ public:
   /* Time has passed by the given # of milliseconds since the last time the tick() method was called */
   void tick( uint64_t ms_since_last_tick, const TransmitFunction& transmit );
 
+  void before_transmit ( const TCPSenderMessage& message );
+
   // Accessors
   uint64_t sequence_numbers_in_flight() const;  // How many sequence numbers are outstanding?
   uint64_t consecutive_retransmissions() const; // How many consecutive retransmissions have happened?
@@ -42,4 +45,14 @@ private:
   ByteStream input_;
   Wrap32 isn_;
   uint64_t initial_RTO_ms_;
+  // 加的
+  uint64_t current_window_ { 1 };
+  uint64_t current_buffering_ { 0 };
+  uint64_t consecutive_retransmissions_ { 0 };
+  uint64_t curren_RTO_ms_;
+  uint64_t timer_ms_ { 0 };
+  uint64_t abs_seqno_ { 0 };
+  std::deque<TCPSenderMessage> outstanding_data_ {};
+  bool is_SYN_sent_ { false };
+  bool is_FIN_sent_ { false };
 };
