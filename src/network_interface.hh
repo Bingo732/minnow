@@ -7,6 +7,9 @@
 #include <memory>
 #include <queue>
 
+// 加的
+#include <map>
+
 // A "network interface" that connects IP (the internet layer, or network layer)
 // with Ethernet (the network access layer, or link layer).
 
@@ -66,6 +69,20 @@ public:
   OutputPort& output() { return *port_; }
   std::queue<InternetDatagram>& datagrams_received() { return datagrams_received_; }
 
+  ///////////// 加的
+
+  // 当前是否有此地址的映射
+  bool availbale_in_table( const uint32_t& ip_address ) const { return mapping_table_.find(ip_address) != mapping_table_.end(); }
+  // 当前是否在等待获取此地址的映射
+  bool availbale_in_requesting_queue( const uint32_t& ip_address ) const { return mapping_requesting_.find(ip_address) != mapping_requesting_.end(); }
+  // 将 APR 报文封装为以太网帧
+  EthernetFrame wrap( const ARPMessage &arp_msg, const EthernetAddress &next_hop_mac ) const;
+  // 将 IPV4 报文封装为以太网帧
+  EthernetFrame wrap( const InternetDatagram &ipv4_msg, const uint32_t& next_hop ) const;
+  // 缺少 next_hop 对应的 MAC 地址，生成 ARP 请求报文
+  ARPMessage ARP_generate( const uint32_t& next_hop ) const;
+  // 根据收到的 ARP 请求报文生成对应响应报文
+  ARPMessage ARP_generate( const ARPMessage &arp_msg ) const;
 private:
   // Human-readable name of the interface
   std::string name_;
@@ -82,4 +99,13 @@ private:
 
   // Datagrams that have been received
   std::queue<InternetDatagram> datagrams_received_ {};
+
+  ///////////// 加的
+
+  // 存储 IP - MAC 映射及其生存时间
+  std::map<uint32_t, std::pair<EthernetAddress, uint16_t>> mapping_table_ {};
+  // 存储当前正在等待获取 MAC 信息的 IP 地址以及等待时间
+  std::map<uint32_t, uint16_t> mapping_requesting_ {};
+  // 存储当前等待发送的报文及其等待时间
+  std::multimap<uint32_t, std::pair<InternetDatagram, uint16_t>> internet_datagram_queue_ {};
 };
