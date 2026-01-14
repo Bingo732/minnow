@@ -5,6 +5,9 @@
 
 #include <optional>
 
+// 加的
+#include <map>
+
 // \brief A router that has multiple network interfaces and
 // performs longest-prefix-match routing between them.
 class Router
@@ -31,7 +34,24 @@ public:
   // Route packets between the interfaces
   void route();
 
+  // 加的
+
+  // 单条路由的匹配
+  bool route_matching( uint32_t, uint32_t, uint8_t ) const;
+  // 最长前缀路由匹配
+  bool longest_prefix_matching( uint32_t, uint32_t&, size_t& ) const;
 private:
   // The router's collection of network interfaces
   std::vector<std::shared_ptr<NetworkInterface>> interfaces_ {};
+
+  // 加的
+
+  // 路由排序, 优先考虑最大长度
+  struct RouteCompare {
+    bool operator() ( const std::pair<uint32_t, uint8_t> &l, const std::pair<uint32_t, uint8_t> &r ) const {
+      return l.second > r.second ? l.second > r.second : l.first > r.first;
+    }
+  };
+  // 存储的路由表
+  std::map<std::pair<uint32_t, uint8_t>, std::pair<std::optional<uint32_t>, size_t>, RouteCompare> routing_table_;
 };

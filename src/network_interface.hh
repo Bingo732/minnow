@@ -9,6 +9,7 @@
 
 // 加的
 #include <map>
+#include "arp_message.hh"
 
 // A "network interface" that connects IP (the internet layer, or network layer)
 // with Ethernet (the network access layer, or link layer).
